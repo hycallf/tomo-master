@@ -87,9 +87,7 @@
         $(document).ready(function() {
 
             $('#overdueTable').DataTable({
-                "order": [
-                    [6, "asc"]
-                ], // Urutkan berdasarkan kolom tanggal selesai (index 6)
+                "order": [], // Urutkan berdasarkan kolom tanggal selesai (index 6)
                 "pageLength": 10,
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json"
@@ -97,10 +95,7 @@
             });
 
             $('#regularTable').DataTable({
-                "order": [
-                    [6, "asc"],
-                    [7, "asc"]
-                ], // Urutkan berdasarkan tanggal selesai, kemudian status reminder
+                "order": [], // Urutkan berdasarkan tanggal selesai, kemudian status reminder
                 "pageLength": 10,
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json"

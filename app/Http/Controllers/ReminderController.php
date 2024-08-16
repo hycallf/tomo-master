@@ -73,12 +73,16 @@ class ReminderController extends Controller
             $statusPerbaikan = $perbaikan->status;
             $tanggalPerbaikan = Carbon::parse($perbaikan->tgl_selesai)->format('d-m-Y');
 
+            // Hitung durasi
+        $now = Carbon::now();
+        $durasi = $this->hitungDurasi($perbaikan->tgl_selesai, $now);
+
             $message = "Yth. Bapak/Ibu " . $perbaikan->kendaraan->pelanggan->nama . "!\n\n" .
             "{$settings->master_nama} mengingatkan bahwa kendaraan Anda dengan detail berikut:\n\n" .
                 "*Merek:* " . $merek . "\n" .
                 "*Tipe:* " . $tipe . "\n" .
                 "*Nomor Plat:* " . $noPlat . "\n\n" . 
-                "Terakhir kali Anda melakukan service di toko kami pada tanggal " . $tanggalPerbaikan . ", dan sudah memasuki waktu servis rutin di setiap 3 bulannya. Pastikan untuk menjadwalkan perawatan kendaraan kesayangan Anda di bengkel kami agar performa perjalanan Anda selalu nyaman dan aman.\n\n" . 
+                "Sudah terlewat {$durasi} sejak Terakhir kali Anda melakukan service di toko kami yaitu pada tanggal " . $tanggalPerbaikan . ", kendaraan anda sudah memasuki waktu servis rutin bulanan. Pastikan untuk menjadwalkan perawatan kendaraan kesayangan Anda di bengkel kami agar performa perjalanan Anda selalu nyaman dan aman.\n\n" . 
                 "Untuk informasi lebih lanjut, silakan hubungi kami:\n" .
                 "Telepon: {$settings->telepon}\n" .
                 "WhatsApp: {$settings->whatsapp}\n" .
