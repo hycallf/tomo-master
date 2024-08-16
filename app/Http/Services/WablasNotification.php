@@ -7,12 +7,14 @@ use Illuminate\Support\Facades\Http;
 class WablasNotification
 {
     private $token;
+    private $url;
     private $phone;
     private $message;
 
     public function __construct()
     {
         $this->token = config('services.wablas.token');
+        $this->url = config('services.wablas.url');
     }
 
     public function setPhone($phone)
@@ -51,7 +53,7 @@ class WablasNotification
 
         $response = Http::withHeaders(['Authorization' => $this->token])
             ->asForm()
-            ->post('https://kudus.wablas.com/api/send-message', [
+            ->post($this->url, [
                 'phone' => $this->phone,
                 'message' => $this->message,
             ]);

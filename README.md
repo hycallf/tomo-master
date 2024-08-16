@@ -1,64 +1,133 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Sistem Reminder Service Kendaraan
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem ini adalah aplikasi berbasis Laravel untuk mengelola reminder service kendaraan. Aplikasi ini mengintegrasikan WhatsApp menggunakan layanan Wablas untuk mengirimkan pesan reminder kepada pelanggan.
 
-## About Laravel
+## Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+-   Manajemen data perbaikan kendaraan
+-   Sistem reminder otomatis
+-   Integrasi WhatsApp menggunakan Wablas
+-   Dashboard admin untuk monitoring dan pengiriman reminder manual
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Persyaratan Sistem
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+-   PHP >= 7.3
+-   Composer
+-   MySQL atau MariaDB
+-   Node.js dan NPM (untuk kompilasi asset)
 
-## Learning Laravel
+## Instalasi
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. Clone repositori ini:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+    ```
+    git clone https://github.com/username/nama-repositori.git
+    cd nama-repositori
+    ```
 
-## Laravel Sponsors
+2. Instal dependensi PHP:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+    ```
+    composer install
+    npm install
+    ```
 
-### Premium Partners
+3. Salin file `.env.example` menjadi `.env`:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+    ```
+    cp .env.example .env
+    ```
 
-## Contributing
+4. Generate application key:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+    ```
+    php artisan key:generate
+    ```
 
-## Code of Conduct
+5. Konfigurasi database di file `.env`:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+    ```
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=nama_database
+    DB_USERNAME=username
+    DB_PASSWORD=password
+    ```
 
-## Security Vulnerabilities
+6. Jalankan migrasi database:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+    ```
+    php artisan migrate
+    ```
 
-## License
+7. (Opsional) Jalankan seeder untuk mengisi data awal:
+    ```
+    php artisan db:seed
+    ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Konfigurasi Wablas
+
+1. Daftar dan dapatkan API token dari [Wablas](https://wablas.com/).
+
+2. Tambahkan konfigurasi Wablas di file `.env`:
+
+    ```
+    WABLAS_API_TOKEN=your_wablas_token
+    WABLAS_URL=https://your-wablas-domain.com
+    ```
+
+3. Pastikan Anda telah menambahkan konfigurasi Wablas di `config/services.php`:
+    ```php
+    'wablas' => [
+        'token' => env('WABLAS_TOKEN'),
+        'url' => env('WABLAS_URL'),
+    ],
+    ```
+
+## Penggunaan
+
+1. Jalankan server development:
+
+    ```
+    php artisan serve
+    ```
+
+2. Akses aplikasi melalui browser: `http://localhost:8000`
+
+3. Login menggunakan kredensial admin default:
+    - Email: admin@example.com
+    - Password: password
+
+## Kustomisasi
+
+-   Pengaturan aplikasi dapat diubah melalui panel admin di menu Settings.
+-   Template pesan reminder dapat disesuaikan di `app/Http/Controllers/ReminderController.php`.
+
+## Troubleshooting
+
+Jika Anda mengalami masalah saat instalasi atau penggunaan, coba langkah-langkah berikut:
+
+1. Pastikan semua persyaratan sistem terpenuhi.
+2. Hapus cache aplikasi:
+    ```
+    php artisan cache:clear
+    php artisan config:clear
+    php artisan view:clear
+    ```
+3. Regenerate autoload files:
+    ```
+    composer dump-autoload
+    ```
+4. Jika ada masalah dengan database, coba reset dan migrate ulang:
+    ```
+    php artisan migrate:fresh --seed
+    ```
+
+## Kontribusi
+
+Kontribusi selalu diterima. Silakan buat pull request atau laporkan issue jika Anda menemukan bug atau memiliki saran perbaikan.
+
+## Lisensi
+
+Proyek ini dilisensikan di bawah [MIT License](LICENSE).

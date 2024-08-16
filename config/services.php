@@ -40,6 +40,7 @@ return [
 
     'wablas' => [
         'token' => env('WABLAS_API_KEY'),
+        'url' => env('WABLAS_API_URL')
     ],
     'fonnte' => [
         'token' => env('FONNTE_API_KEY'),
