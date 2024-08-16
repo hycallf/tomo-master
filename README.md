@@ -11,7 +11,7 @@ Sistem ini adalah aplikasi berbasis Laravel untuk mengelola reminder service ken
 
 ## Persyaratan Sistem
 
--   PHP >= 7.3
+-   PHP >= 8
 -   Composer
 -   MySQL atau MariaDB
 -   Node.js dan NPM (untuk kompilasi asset)
