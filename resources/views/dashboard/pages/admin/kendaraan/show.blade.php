@@ -9,9 +9,9 @@
         }
 
         /*
-                                                                                                        .btn-show-pemilik:hover {
-                                                                                                            color: #007bff;
-                                                                                                        } */
+                                                                                                                        .btn-show-pemilik:hover {
+                                                                                                                            color: #007bff;
+                                                                                                                        } */
     </style>
 @endsection
 @section('content')
@@ -147,7 +147,7 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $perbaikan->kode_unik }}</td>
                                                 <td>{{ $perbaikan->nama }}</td>
-                                                <td>{{ $perbaikan->created_at ?? '-' }}</td>
+                                                <td>{{ $perbaikan->tgl_masuk ?? $perbaikan->created_at }}</td>
                                                 <td>{{ $perbaikan->tgl_selesai ?? '-' }}</td>
                                                 <td>
                                                     @php

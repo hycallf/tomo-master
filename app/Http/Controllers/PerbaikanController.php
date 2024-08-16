@@ -49,6 +49,7 @@ class PerbaikanController extends Controller
             [
                 'nama' => ['required', 'string'],
                 'keterangan' => ['required', 'string'],
+                'tgl_masuk' => ['nullable','date'],
                 'foto' => ['nullable', 'image', 'file', 'mimes:jpeg,png,jpg,gif,svg', 'max:5000'],
             ],
             [
@@ -57,9 +58,12 @@ class PerbaikanController extends Controller
                 'foto.required' => 'Foto tidak boleh kosong',
                 'foto.max' => 'Ukuran gambar terlalu besar',
                 'foto.mimes' => 'Format gambar tidak valid',
+                'tgl_masuk.date' => 'Format Tgl. Masuk tidak valid',
             ]
         );
-
+        if (!isset($validate['tgl_masuk'])) {
+            $validate['tgl_masuk'] = Carbon::now()->toDateString();
+        }
         $foto = null;
 
         if ($request->hasFile('foto')) {
@@ -77,6 +81,7 @@ class PerbaikanController extends Controller
             'keterangan' => $request->keterangan,
             'foto' => $foto,
             'status' => $request->status,
+            'tgl_masuk' => $request->tgl_masuk,
         ]);
 
         try {
@@ -98,7 +103,7 @@ class PerbaikanController extends Controller
             $namaPerbaikan = $perbaikan->nama;
             $keteranganPerbaikan = $perbaikan->keterangan;
             $statusPerbaikan = $perbaikan->status;
-            $tanggalPerbaikan = $perbaikan->created_at;
+            $tanggalPerbaikan = $perbaikan->tgl_masuk ?? $perbaikan->created_at;
 
             $message = "Halo, " . $perbaikan->kendaraan->pelanggan->nama . "!\n\n" .
                 "Kendaraan Anda dengan detail berikut:\n\n" .
@@ -175,6 +180,7 @@ class PerbaikanController extends Controller
             [
                 'nama' => ['required', 'string'],
                 'keterangan' => ['required', 'string'],
+                'tgl_masuk' => ['nullable','date'],
                 'foto' => ['nullable', 'image', 'file', 'mimes:jpeg,png,jpg,gif,svg', 'max:5000'],
             ],
             [
@@ -183,12 +189,18 @@ class PerbaikanController extends Controller
                 'tgl_selesai.date' => 'Format Tgl. Selesai tidak valid',
                 'foto.max' => 'Ukuran gambar terlalu besar',
                 'foto.mimes' => 'Format gambar tidak valid',
+                'tgl_masuk.date' => 'Format Tgl. Masuk tidak valid',
             ]
         );
+
+        if (!isset($validate['tgl_masuk'])) {
+            $validate['tgl_masuk'] = $perbaikan->tgl_masuk ?? Carbon::now()->toDateString();
+        }
 
         $perbaikan->update([
             'nama' => $validate['nama'],
             'keterangan' => $validate['keterangan'],
+            'tgl_masuk' => $validate['tgl_masuk'],
         ]);
 
         if ($request->hasFile('foto')) {

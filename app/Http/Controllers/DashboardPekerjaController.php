@@ -7,6 +7,7 @@ use App\Mail\AddedProgresPerbaikanMail;
 use App\Mail\ChangedStatusPerbaikanMail;
 use App\Models\Perbaikan;
 use App\Models\Progres;
+use App\Models\Settings;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -321,6 +322,7 @@ class DashboardPekerjaController extends Controller
     private function sendWhatsappNotificationChangedStatus($perbaikan)
     {
         try {
+            
             $phone = $perbaikan->kendaraan->pelanggan->no_telp;
             $message = $this->createNotificationMessageChangedStatus($perbaikan);
 
@@ -348,10 +350,10 @@ class DashboardPekerjaController extends Controller
 
     private function createNotificationMessageChangedStatus($perbaikan)
     {
+        $settings = Settings::first();
         $namaPelanggan = $perbaikan->kendaraan->pelanggan->nama;
         $namaPerbaikan = $perbaikan->nama;
         $keteranganPerbaikan = $perbaikan->keterangan;
-        $durasiPerbaikan = $perbaikan->durasi;
         $statusPerbaikan = $perbaikan->status;
         $tanggalPerbaikan = $perbaikan->updated_at;
 
@@ -359,16 +361,16 @@ class DashboardPekerjaController extends Controller
             "Kami ingin menginformasikan bahwa status perbaikan kendaraan Anda telah berubah. Berikut adalah detail perbaikan Anda:\n\n" .
             "*Nama Perbaikan:* " . $namaPerbaikan . "\n" .
             "*Keterangan:* " . $keteranganPerbaikan . "\n" .
-            "*Durasi:* " . $durasiPerbaikan . "\n" .
             "*Status:* " . $statusPerbaikan . "\n" .
             "*Tanggal:* " . $tanggalPerbaikan->format('d-m-Y H:i') . "\n\n" .
             "Terima kasih telah mempercayakan layanan kami.\n\n" .
             "Salam,\n" .
-            "-Tim Bengkel Cat Wijayanto";
+            "-Tim {$settings->master_nama}";
     }
 
     private function createNotificationMessageAddedProgresPerbaikan($progres)
     {
+        $settings = Settings::first();
         $namaPelanggan = $progres->perbaikan->kendaraan->pelanggan->nama;
         $kodePerbaikan = $progres->perbaikan->kode_unik;
         $keteranganProgres = $progres->keterangan;
@@ -381,6 +383,6 @@ class DashboardPekerjaController extends Controller
             "*Tanggal:* " . $tanggalProgres . "\n\n" .
             "Terima kasih telah mempercayakan layanan kami.\n\n" .
             "Salam,\n" .
-            "-Tim Bengkel Cat Wijayanto";
+            "-Tim {$settings->master_nama}";
     }
 }

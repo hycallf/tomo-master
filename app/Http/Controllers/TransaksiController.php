@@ -6,6 +6,7 @@ use App\Http\Services\WablasNotification;
 use App\Mail\ChangedStatusPerbaikanMail;
 use App\Mail\TransaksiSelesaiMail;
 use App\Models\Transaksi;
+use App\Models\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -27,8 +28,9 @@ class TransaksiController extends Controller
     public function index()
     {
         $pageTitle = 'Transaksi';
+        $settings = Settings::first();
 
-        return view('dashboard.pages.admin.transaksi.index', compact('pageTitle'));
+        return view('dashboard.pages.admin.transaksi.index', compact('pageTitle', 'settings'));
     }
 
     public function dataTableTransaksi()
@@ -46,12 +48,14 @@ class TransaksiController extends Controller
 
     public function show(Transaksi $transaksi)
     {
+        $settings = Settings::first();
         $pageTitle = 'Detail Transaksi';
         $transaksi->load('pelanggan', 'perbaikan', 'perbaikan.kendaraan');
 
         return view('dashboard.pages.admin.transaksi.show', compact(
             'pageTitle',
-            'transaksi'
+            'transaksi',
+            'settings'
         ));
     }
 
@@ -364,6 +368,7 @@ class TransaksiController extends Controller
 
     private function createNotificationMessageChangedStatus($perbaikan)
     {
+        $settings = Settings::first();
         $namaPelanggan = $perbaikan->kendaraan->pelanggan->nama;
         $namaPerbaikan = $perbaikan->nama;
         $keteranganPerbaikan = $perbaikan->keterangan;
@@ -375,12 +380,11 @@ class TransaksiController extends Controller
             "Kami ingin menginformasikan bahwa status perbaikan kendaraan Anda telah berubah. Berikut adalah detail perbaikan Anda:\n\n" .
             "*Nama Perbaikan:* " . $namaPerbaikan . "\n" .
             "*Keterangan:* " . $keteranganPerbaikan . "\n" .
-            "*Durasi:* " . $durasiPerbaikan . "\n" .
             "*Status:* " . $statusPerbaikan . "\n" .
             "*Tanggal:* " . $tanggalPerbaikan->format('d-m-Y H:i') . "\n\n" .
             "Terima kasih telah mempercayakan layanan kami.\n\n" .
             "Salam,\n" .
-            "-Tim Bengkel Cat Wijayanto";
+            "-Tim {$settings->master_nama}";
     }
 
     private function sendWhatsappNotificationTransaksiDone($transaksi)
@@ -413,6 +417,7 @@ class TransaksiController extends Controller
 
     private function createNotificationMessageTransaksiDone($transaksi)
     {
+        $settings = Settings::first();
         $namaPelanggan = $transaksi->pelanggan->nama;
         $orderId = $transaksi->order_id;
         $grossAmount = $transaksi->gross_amount;
@@ -425,6 +430,6 @@ class TransaksiController extends Controller
             "*Status Transaksi:* " . $transaction_status . "\n\n" .
             "Terima kasih telah menyelesaikan transaksi ini. Kami menghargai kepercayaan Anda terhadap layanan kami.\n\n" .
             "Salam,\n" .
-            "-Tim Bengkel Cat Wijayanto";
+            "-Tim {$settings->master_nama}";
     }
 }

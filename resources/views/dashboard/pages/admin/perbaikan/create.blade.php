@@ -1,5 +1,10 @@
 @extends('dashboard.layouts.main')
-
+@section('css')
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Pastikan Bootstrap terhubung -->
+@endsection
 @section('content')
     <div class="pagetitle">
         <h1>Tambah Service</h1>
@@ -46,6 +51,18 @@
                             </div>
 
                             <div class="col-md-12">
+                                <label for="inputTglMasuk" class="form-label">Tanggal Masuk</label>
+                                <input type="text"
+                                    class="form-control datepicker @error('tgl_masuk') is-invalid @enderror"
+                                    name="tgl_masuk" id="inputTglMasuk" value="{{ old('tgl_masuk') }}">
+                                @error('tgl_masuk')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-12">
                                 <label for="inputFoto" class="form-label">Foto</label>
                                 <input class="form-control @error('foto') is-invalid @enderror" type="file"
                                     id="foto" name="foto" onchange="previewFoto()">
@@ -75,10 +92,19 @@
 @endsection
 
 @section('js')
+    <script script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js">
+    </script>
+
     <script>
         $(document).ready(function() {
             $('.select2').select2({
                 theme: 'bootstrap-5'
+            });
+
+            $('#inputtgl_masuk').flatpickr({
+                mode: "default",
+                dateFormat: "Y-m-d",
+                defaultDate: defaultDate,
             });
         });
     </script>

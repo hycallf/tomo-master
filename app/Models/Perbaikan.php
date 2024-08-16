@@ -18,6 +18,7 @@ class Perbaikan extends Model
         'biaya',
         'durasi',
         'tgl_selesai',
+        'tgl_masuk',
         'status',
         'reminder_sent',
         'reminder_sent_at'

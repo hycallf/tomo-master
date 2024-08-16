@@ -8,6 +8,7 @@ use App\Mail\TransaksiCreatedMail;
 use App\Mail\TransaksiSelesaiMail;
 use App\Models\Perbaikan;
 use App\Models\Transaksi;
+use App\Models\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -319,6 +320,7 @@ class DashboardAdminController extends Controller
 
     private function createNotificationMessageChangedStatus($perbaikan)
     {
+        $settings = Settings::first();
         $namaPelanggan = $perbaikan->kendaraan->pelanggan->nama;
         $namaPerbaikan = $perbaikan->nama;
         $keteranganPerbaikan = $perbaikan->keterangan;
@@ -330,12 +332,11 @@ class DashboardAdminController extends Controller
             "Kami ingin menginformasikan bahwa status perbaikan kendaraan Anda telah berubah. Berikut adalah detail perbaikan Anda:\n\n" .
             "*Nama Perbaikan:* " . $namaPerbaikan . "\n" .
             "*Keterangan:* " . $keteranganPerbaikan . "\n" .
-            "*Durasi:* " . $durasiPerbaikan . "\n" .
             "*Status:* " . $statusPerbaikan . "\n" .
             "*Tanggal:* " . $tanggalPerbaikan->format('d-m-Y H:i') . "\n\n" .
             "Terima kasih telah mempercayakan layanan kami.\n\n" .
             "Salam,\n" .
-            "-Tim Bengkel Cat Wijayanto";
+            "-Tim {$settings->master_nama}";
     }
 
     private function sendWhatsappNotificationCreatedTransaksi($transaksi)
@@ -380,7 +381,7 @@ class DashboardAdminController extends Controller
             "*Status Transaksi:* " . $transaction_status . "\n\n" .
             "Harap segera memproses pembayaran Anda. Terima kasih telah mempercayakan layanan kami.\n\n" .
             "Salam,\n" .
-            "-Tim Bengkel Cat Wijayanto";
+            "-Tim {$settings->master_nama}";
     }
 
     private function sendWhatsappNotificationTransaksiDone($transaksi)
@@ -425,6 +426,6 @@ class DashboardAdminController extends Controller
             "*Status Transaksi:* " . $transaction_status . "\n\n" .
             "Terima kasih telah menyelesaikan transaksi ini. Kami menghargai kepercayaan Anda terhadap layanan kami.\n\n" .
             "Salam,\n" .
-            "-Tim Bengkel Cat Wijayanto";
+            "-Tim {$settings->master_nama}";
     }
 }

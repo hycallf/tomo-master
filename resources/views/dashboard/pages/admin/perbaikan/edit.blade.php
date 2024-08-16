@@ -45,6 +45,18 @@
                             </div>
 
                             <div class="col-md-12">
+                                <label for="inputtgl_masuk" class="form-label">Tanggal Masuk</label>
+                                <input type="date" class="form-control @error('tgl_masuk') is-invalid @enderror"
+                                    name="tgl_masuk" id="inputtgl_masuk"
+                                    value="{{ old('tgl_masuk') ?? $perbaikan->tgl_masuk }}">
+                                @error('tgl_masuk')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+
+                            <div class="col-md-12">
                                 <label for="inputFoto" class="form-label">Foto</label>
                                 <input class="form-control @error('foto') is-invalid @enderror" type="file"
                                     id="foto" name="foto" onchange="previewFoto()">
@@ -77,13 +89,10 @@
 @section('js')
     <script>
         $(document).ready(function() {
-            var durasi = "{{ $perbaikan->durasi }}";
-            var defaultDate = durasi.split(" to ");
 
-
-            $('#durasi').flatpickr({
-                mode: "range",
-                dateFormat: "d-m-Y",
+            $('#inputtgl_masuk').flatpickr({
+                mode: "default",
+                dateFormat: "Y-m-d",
                 defaultDate: defaultDate,
             });
         });

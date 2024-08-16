@@ -26,71 +26,92 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="panel-body mt-4">
-                            <div class="clearfix">
-                                <div class="float-start">
-                                    <h3>Bengkel Cat W</h3>
-                                </div>
-                                <div class="float-end">
-                                    <h4>Invoice # <br>
-                                        <strong>{{ $transaksi->order_id }}</strong>
-                                    </h4>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="float-start mt-3">
-                                        <address>
-                                            <strong>Bengkel Cat W</strong><br>
-                                            Jl. AR Hakim No.25<br>
-                                            Krajan IV, Semanten, Kec. Pacitan, Kabupaten Pacitan,<br>
-                                            Jawa Timur 63518<br>
-                                            <abbr title="Phone">P:</abbr> (+62) 89-696-764-576
-                                        </address>
-                                    </div>
-                                    <div class="float-end mt-3">
-                                        <table class="table table-borderless">
-                                            <tr>
-                                                <th>Order Date</th>
-                                                <td>: {{ \Carbon\Carbon::parse($transaksi->created_at)->format('d-m-Y') }}
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Order Status</th>
-                                                <td>: {{ $transaksi->transaction_status ?? '-' }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Payment Method</th>
-                                                <td>: {{ $transaksi->chosen_payment ?? '' }}</td>
-                                            </tr>
-                                            <tr>
-                                                <th>By</th>
-                                                <td>: {{ $transaksi->pay_by ?? '' }}</td>
-                                            </tr>
-                                        </table>
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <h3 class="mb-3">{{ $settings->master_nama }}</h3>
+                                    <div class="company-details">
+                                        <p><i class="bi bi-geo-alt-fill me-2"></i>{{ $settings->alamat }}</p>
+                                        <p><i class="bi bi-telephone-fill me-2"></i>{{ $settings->telepon }}</p>
+                                        @php
+                                            $whatsappNumber = preg_replace(
+                                                '/[^0-9]/',
+                                                '',
+                                                str_replace('wa.me/', '', $settings->whatsapp),
+                                            );
+                                        @endphp
+                                        <p>
+                                            <i class="bi bi-whatsapp me-2"></i>
+                                            <a href="https://wa.me/{{ $whatsappNumber }}" class="text-decoration-none">
+                                                {{ $whatsappNumber }}
+                                            </a>
+                                        </p>
                                     </div>
                                 </div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-md-4 ">
-                                    <table class="table table-borderless" style="width: 100%">
+                                <div class="col-md-6 text-md-end">
+                                    <h4 class="mb-3">Invoice #{{ $transaksi->order_id }}</h4>
+                                    <table class="table table-borderless text-md-end">
                                         <tr>
-                                            <th>Nama</th>
-                                            <td>: {{ $transaksi->pelanggan->nama ?? '-' }}</td>
+                                            <th>Tanggal Order:</th>
+                                            <td>{{ \Carbon\Carbon::parse($transaksi->created_at)->format('d-m-Y') }}</td>
                                         </tr>
                                         <tr>
-                                            <th>No Telp</th>
-                                            <td>: {{ $transaksi->pelanggan->no_telp ?? '-' }}</td>
+                                            <th>Status Order:</th>
+                                            <td>{{ $transaksi->transaction_status ?? '-' }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Email</th>
-                                            <td>: {{ $transaksi->email ?? '-' }}</td>
+                                            <th>Metode Pembayaran:</th>
+                                            <td>{{ $transaksi->chosen_payment ?? '-' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Dibayar Oleh:</th>
+                                            <td>{{ $transaksi->pay_by ?? '-' }}</td>
                                         </tr>
                                     </table>
                                 </div>
-                                <div class="col-md-4 ">
-                                    <table class="table table-borderless" style="width: 100%">
+                            </div>
+                            <hr>
+                            <div class="row mt-4">
+                                <div class="col-md-4">
+                                    <h5 class="mb-3">Data Pelanggan</h5>
+                                    <table class="table table-borderless">
+                                        <tr>
+                                            <th style="width: 35%;">Nama</th>
+                                            <td style="width: 5%;">:</td>
+                                            <td>{{ $transaksi->pelanggan->nama ?? '-' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>No Telp</th>
+                                            <td>:</td>
+                                            <td>{{ $transaksi->pelanggan->no_telp ?? '-' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Email</th>
+                                            <td>:</td>
+                                            <td>
+                                                @if ($transaksi->pelanggan->email)
+                                                    @php
+                                                        $email = $transaksi->pelanggan->email;
+                                                        $emailParts = explode('@', $email);
+                                                        $username = $emailParts[0];
+                                                        $domain = isset($emailParts[1]) ? '@' . $emailParts[1] : '';
+
+                                                        if (strlen($username) > 20) {
+                                                            $username = substr($username, 0, 20) . '...';
+                                                        }
+
+                                                        $wrappedEmail = $username . '<br>' . $domain;
+                                                    @endphp
+                                                    {!! $wrappedEmail !!}
+                                                @else
+                                                    -
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-4">
+                                    <h5 class="mb-3">Data Kendaraan</h5>
+                                    <table class="table table-borderless">
                                         <tr>
                                             <th>No Plat</th>
                                             <td>: {{ $transaksi->perbaikan->kendaraan->no_plat ?? '-' }}</td>
@@ -106,7 +127,8 @@
                                     </table>
                                 </div>
                                 <div class="col-md-4">
-                                    <table class="table table-borderless" style="width: 100%">
+                                    <h5 class="mb-3">Data Perbaikan</h5>
+                                    <table class="table table-borderless">
                                         <tr>
                                             <th>Nama Perbaikan</th>
                                             <td>: {{ $transaksi->perbaikan->nama ?? '-' }}</td>
@@ -125,33 +147,21 @@
                                 </div>
                             </div>
                             <hr>
-                            <div class="row justify-content-end">
+                            <div class="row justify-content-end mt-4">
                                 <div class="col-md-6" style="font-size: 12px">
-                                    <div class="clearfix mt-4">
-                                        <h5 class="small text-dark fw-normal">SYARAT DAN KETENTUAN PEMBAYARAN</h5>
-
-                                        <small>
-                                            Pembayaran harus dilakukan sesuai dengan waktu yang ditentukan.
-                                            Pembayaran dapat dilakukan menggunakan kartu kredit, transfer bank,
-                                            atau metode pembayaran lainnya yang didukung. Jika pembayaran tidak tepat
-                                            waktu, maka transaksi harus dilakukan ulang.
-                                        </small>
-                                    </div>
+                                    <h5 class="small text-dark fw-normal">SYARAT DAN KETENTUAN PEMBAYARAN</h5>
+                                    <p>
+                                        Pembayaran harus dilakukan sesuai dengan waktu yang ditentukan.
+                                        Pembayaran dapat dilakukan menggunakan kartu kredit, transfer bank,
+                                        atau metode pembayaran lainnya yang didukung. Jika pembayaran tidak tepat
+                                        waktu, maka transaksi harus dilakukan ulang.
+                                    </p>
                                 </div>
-                                <div class="col-md-6" style="text-align: right">
+                                <div class="col-md-6 text-end">
                                     <h2>Total</h2>
                                     <h4><strong>Rp. {{ number_format($transaksi->gross_amount) ?? '-' }}</strong></h4>
                                 </div>
                             </div>
-                            <hr>
-                            {{-- <div class="d-print-none">
-                                <div class="float-end">
-                                    <a href="#" class="btn btn-dark">
-                                        <i class="bi bi-printer-fill"></i>
-                                        Cetak
-                                    </a>
-                                </div>
-                            </div> --}}
                         </div>
                     </div>
                 </div>

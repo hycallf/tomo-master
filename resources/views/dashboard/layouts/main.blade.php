@@ -45,6 +45,7 @@
     <link href="{{ asset('assets/dashboard/vendor/quill/quill.bubble.css') }}" rel="stylesheet" type="text/css">
 
     <!-- Template Main CSS File -->
+    @yield('css')
     <link href="{{ asset('assets/dashboard/css/style.css') }}" rel="stylesheet" type="text/css">
 
     <!-- My CSS -->
