@@ -19,8 +19,15 @@ class ReminderController extends Controller
 
         $overduePerbaikans = Perbaikan::with(['kendaraan.pelanggan'])
             ->where('status', 'Selesai')
-            ->where('reminder_sent', false)
-            ->where('tgl_selesai', '<', $threeMonthsAgo)
+            ->where(function ($query) use ($threeMonthsAgo) {
+                $query->where(function ($query) use ($threeMonthsAgo) { // Tambahkan $threeMonthsAgo di sini
+                    $query->where('reminder_sent', true)
+                        ->where('reminder_sent_at', '<', $threeMonthsAgo);
+                })->orWhere(function ($query) use ($threeMonthsAgo) { // Tambahkan $threeMonthsAgo di sini
+                    $query->where('reminder_sent', false)
+                        ->where('tgl_selesai', '<', $threeMonthsAgo);
+                });
+            })
             ->orderBy('tgl_selesai', 'asc')
             ->get()
             ->map(function ($perbaikan) use ($now) {

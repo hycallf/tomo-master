@@ -29,12 +29,12 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Ticket</th>
+                                    <th>services</th>
                                     <th>Pemilik</th>
                                     <th>No Pelanggan</th>
                                     <th>Kendaraan</th>
                                     <th>No Plat</th>
-                                    <th>Tanggal Selesai</th>
+                                    <th>Terakhir service</th>
                                     <th>Hitung Hari</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -57,12 +57,12 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Ticket</th>
+                                    <th>services</th>
                                     <th>Pemilik</th>
                                     <th>No Pelanggan</th>
                                     <th>Kendaraan</th>
                                     <th>No Plat</th>
-                                    <th>Tanggal Selesai</th>
+                                    <th>Terakhir service</th>
                                     <th>Hitung Hari</th>
                                     <th>Aksi</th>
                                 </tr>
