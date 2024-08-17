@@ -26,6 +26,7 @@ class PerbaikanFactory extends Factory
             'keterangan' => $this->faker->sentence(10),
             'status' => 'Selesai',
             'tgl_selesai' => $tanggalSelesai,
+            'tgl_masuk' => $tanggalMasuk,
             'created_at' => $tanggalMasuk,
             'updated_at' => $tanggalSelesai,
         ];

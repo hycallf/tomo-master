@@ -95,9 +95,26 @@ Sistem ini adalah aplikasi berbasis Laravel untuk mengelola reminder service ken
 
 2. Akses aplikasi melalui browser: `http://localhost:8000`
 
-3. Login menggunakan kredensial admin default:
-    - Email: admin@example.com
+3. Login menggunakan kredensial default:
+
+    Administator Level 0(all feature)
+
+    - Email: administrator@gmail.com
     - Password: password
+
+    Admin Level 1 (all except CRUD master user, transaksi)
+
+    - Email: admin@gmail.com
+    - Password: password
+
+    Pekerja (edit progres perbaikan)
+
+    - Email: pekerja@gmail.com
+    - Password: password
+
+    Pengguna (melihat data kendaraanku dan perbaikan yang dilakukan)
+    -email : bisa daftar sendiri
+    -password : bisa daftar sendiri
 
 ## Kustomisasi
 

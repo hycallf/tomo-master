@@ -82,7 +82,7 @@ class ReminderController extends Controller
                 "*Merek:* " . $merek . "\n" .
                 "*Tipe:* " . $tipe . "\n" .
                 "*Nomor Plat:* " . $noPlat . "\n\n" . 
-                "Sudah terlewat {$durasi} sejak Terakhir kali Anda melakukan service di toko kami yaitu pada tanggal " . $tanggalPerbaikan . ", kendaraan anda sudah memasuki waktu servis rutin bulanan. Pastikan untuk menjadwalkan perawatan kendaraan kesayangan Anda di bengkel kami agar performa perjalanan Anda selalu nyaman dan aman.\n\n" . 
+                "Sudah terlewat {$durasi} sejak Terakhir kali Anda selesai melakukan service di toko kami yaitu pada tanggal " . $tanggalPerbaikan . ", kendaraan anda sudah memasuki waktu servis rutin bulanan. Pastikan untuk menjadwalkan perawatan kendaraan kesayangan Anda di bengkel kami agar performa perjalanan Anda selalu nyaman dan aman.\n\n" . 
                 "Untuk informasi lebih lanjut, silakan hubungi kami:\n" .
                 "Telepon: {$settings->telepon}\n" .
                 "WhatsApp: {$settings->whatsapp}\n" .
