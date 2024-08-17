@@ -35,9 +35,11 @@
         <span class="badge bg-success">Terkirim</span>
         <br>
         <small>{{ $perbaikan->reminder_sent_at ? Carbon\Carbon::parse($perbaikan->reminder_sent_at)->format('d-m-Y H:i') : '' }}</small>
+        <button type="button" class="btn btn-warning btn-sm send-reminder" data-id="{{ $perbaikan->id }}">Re-send <i
+                class="bi bi-send"></i></button>
     @else
         <button type="button" class="btn btn-primary btn-sm send-reminder" data-id="{{ $perbaikan->id }}">
-            <i class="bi bi-send"></i>
+            Send <i class="bi bi-send"></i>
         </button>
     @endif
 </td>

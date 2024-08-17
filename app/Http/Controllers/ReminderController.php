@@ -125,4 +125,23 @@ class ReminderController extends Controller
         
     }
 
+    public function sendWhatsAppMessage($phone, $message)
+    {
+        try {
+            $wablasNotification = new WablasNotification();
+            $wablasNotification->setPhone($phone);
+            $wablasNotification->setMessage($message);
+
+            $response = $wablasNotification->sendMessage();
+
+            if ($response['status'] !== true) {
+                throw new \Exception('Gagal mengirim notifikasi WhatsApp');
+            }
+
+            return response()->json(['status' => 'success', 'message' => 'Pesan berhasil dikirim ke WhatsApp']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Gagal mengirim pesan: ' . $e->getMessage()], 500);
+        }
+    }
+
 }

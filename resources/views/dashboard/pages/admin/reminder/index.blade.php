@@ -85,9 +85,8 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-
             $('#overdueTable').DataTable({
-                "order": [], // Urutkan berdasarkan kolom tanggal selesai (index 6)
+                "order": [],
                 "pageLength": 10,
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json"
@@ -95,7 +94,7 @@
             });
 
             $('#regularTable').DataTable({
-                "order": [], // Urutkan berdasarkan tanggal selesai, kemudian status reminder
+                "order": [],
                 "pageLength": 10,
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json"
@@ -134,7 +133,11 @@
                                     cell.html(
                                         '<span class="badge bg-success">Terkirim</span><br><small>' +
                                         new Date().toLocaleString() +
-                                        '</small>');
+                                        '</small>' +
+                                        '<button type="button" class="btn btn-warning btn-sm send-reminder" data-id="' +
+                                        id +
+                                        '">Re-send <i class="bi bi-send"></i></button>'
+                                    );
 
                                     // Pindahkan baris ke tabel regular
                                     var row = button.closest('tr');
