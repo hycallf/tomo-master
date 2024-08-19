@@ -78,7 +78,7 @@ class LaporanController extends Controller
         $status = request()->get('status');
         $pelanggan = request()->get('pelanggan');
 
-        $transaksis = Transaksi::with('perbaikan', 'kendaraan.perbaikan', 'kendaraan.pelanggan')
+        $transaksis = Transaksi::with('perbaikan', 'perbaikan.kendaraan', 'perbaikan.kendaraan.pelanggan')
             ->when($status, function ($query) use ($status) {
                 return $query->where('transaction_status', $status);
             })

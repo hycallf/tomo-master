@@ -21,8 +21,8 @@ Sistem ini adalah aplikasi berbasis Laravel untuk mengelola reminder service ken
 1. Clone repositori ini:
 
     ```
-    git clone https://github.com/username/nama-repositori.git
-    cd nama-repositori
+    git clone -b test https://github.com/hycallf/tomo-master
+    cd tomo-master
     ```
 
 2. Instal dependensi PHP:
@@ -112,7 +112,7 @@ Sistem ini adalah aplikasi berbasis Laravel untuk mengelola reminder service ken
     - Email: pekerja@gmail.com
     - Password: password
 
-    Pengguna (melihat data kendaraanku dan perbaikan yang dilakukan)
+    Pengguna (melihat data kendaraanku dan perbaikan yang telah dilakukan)
     -email : bisa daftar sendiri
     -password : bisa daftar sendiri
 
