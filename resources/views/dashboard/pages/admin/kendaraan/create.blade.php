@@ -99,6 +99,20 @@
                                     </div>
                                 @enderror
                             </div>
+
+                            <!-- Tambahkan ini di form pendaftaran kendaraan -->
+                            <div class="col-md-12">
+                                <label for="maintenance_schedule_months">Jadwal Perawatan Rutin (Bulan)</label>
+                                <input type="number" class="form-control" id="maintenance_schedule_months"
+                                    name="maintenance_schedule_months" value="{{ old('maintenance_schedule_months', 3) }}"
+                                    min="1" required>
+                                @error('maintenance_schedule_months')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                @enderror
+                            </div>
+
                             <div class="col-md-12">
                                 <label for="inputFoto" class="form-label">Foto</label>
                                 <input class="form-control @error('foto') is-invalid @enderror" type="file"

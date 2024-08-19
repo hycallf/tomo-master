@@ -52,7 +52,7 @@
 
                             <div class="col-md-12">
                                 <label for="inputTglMasuk" class="form-label">Tanggal Masuk</label>
-                                <input type="text"
+                                <input type="date"
                                     class="form-control datepicker @error('tgl_masuk') is-invalid @enderror"
                                     name="tgl_masuk" id="inputTglMasuk" value="{{ old('tgl_masuk') }}">
                                 @error('tgl_masuk')
@@ -92,20 +92,20 @@
 @endsection
 
 @section('js')
-    <script script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js">
-    </script>
-
     <script>
         $(document).ready(function() {
-            $('.select2').select2({
-                theme: 'bootstrap-5'
-            });
-
             $('#inputtgl_masuk').flatpickr({
                 mode: "default",
                 dateFormat: "Y-m-d",
                 defaultDate: defaultDate,
             });
+        });
+
+        $(document).ready(function() {
+        $('.select2').select2({
+            theme: 'bootstrap-5'
+        });
+        });
         });
     </script>
 

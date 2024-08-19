@@ -44,7 +44,7 @@ class LaporanController extends Controller
         $totalDuration = $perbaikans->filter(function ($perbaikan) {
             return $perbaikan->status == 'Selesai' && $perbaikan->tgl_selesai;
         })->sum(function ($perbaikan) {
-            return Carbon::parse($perbaikan->created_at)->diffInDays(Carbon::parse($perbaikan->tgl_selesai));
+            return Carbon::parse($perbaikan->tgl_masuk)->diffInDays(Carbon::parse($perbaikan->tgl_selesai));
         });
 
         $completedPerbaikans = $perbaikans->filter(function ($perbaikan) {
@@ -78,7 +78,7 @@ class LaporanController extends Controller
         $status = request()->get('status');
         $pelanggan = request()->get('pelanggan');
 
-        $transaksis = Transaksi::with('perbaikan', 'perbaikan.kendaraan', 'perbaikan.kendaraan.pelanggan')
+        $transaksis = Transaksi::with('perbaikan', 'kendaraan.perbaikan', 'kendaraan.pelanggan')
             ->when($status, function ($query) use ($status) {
                 return $query->where('transaction_status', $status);
             })

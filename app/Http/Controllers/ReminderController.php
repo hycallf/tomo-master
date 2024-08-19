@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Services\WablasNotification;
 use App\Models\Perbaikan;
+use App\Models\Kendaraan;
 use App\Models\Settings;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -15,41 +16,54 @@ class ReminderController extends Controller
     public function index()
     {
         $now = Carbon::now();
-        $threeMonthsAgo = $now->copy()->subMonths(3);
 
-        $overduePerbaikans = Perbaikan::with(['kendaraan.pelanggan'])
-            ->where('status', 'Selesai')
-            ->where(function ($query) use ($threeMonthsAgo) {
-                $query->where(function ($query) use ($threeMonthsAgo) { // Tambahkan $threeMonthsAgo di sini
-                    $query->where('reminder_sent', true)
-                        ->where('reminder_sent_at', '<', $threeMonthsAgo);
-                })->orWhere(function ($query) use ($threeMonthsAgo) { // Tambahkan $threeMonthsAgo di sini
-                    $query->where('reminder_sent', false)
-                        ->where('tgl_selesai', '<', $threeMonthsAgo);
-                });
-            })
-            ->orderBy('tgl_selesai', 'asc')
-            ->get()
-            ->map(function ($perbaikan) use ($now) {
-                $perbaikan->durasi = $this->hitungDurasi($perbaikan->tgl_selesai, $now);
-                return $perbaikan;
-            });
+        $kendaraans = Kendaraan::with(['pelanggan', 'perbaikans' => function ($query) {
+            $query->latest('tgl_selesai');
+        }])
+        ->get()
+        ->map(function ($kendaraan) use ($now) {
+            $lastMaintenance = $kendaraan->perbaikans->first();
+            if ($lastMaintenance) {
+                $lastMaintenanceDate = Carbon::parse($lastMaintenance->tgl_selesai);
+                $kendaraan->last_maintenance_date = $lastMaintenanceDate;
+                $kendaraan->durasi = $lastMaintenanceDate->diffForHumans($now);
+                $kendaraan->is_overdue = ($lastMaintenanceDate->addMonths($kendaraan->maintenance_schedule_months)->isPast() && $kendaraan->reminder_sent == false);
 
-        $regularPerbaikans = Perbaikan::with(['kendaraan.pelanggan'])
-            ->where('status', 'Selesai')
-            ->where(function ($query) use ($threeMonthsAgo) {
-                $query->where('tgl_selesai', '>=', $threeMonthsAgo)
-                    ->orWhere('reminder_sent', true);
-            })
-            ->orderBy('reminder_sent', 'asc')
-            ->orderBy('tgl_selesai', 'asc')
-            ->get()
-            ->map(function ($perbaikan) use ($now) {
-                $perbaikan->durasi = $this->hitungDurasi($perbaikan->tgl_selesai, $now);
-                return $perbaikan;
-            });
+                // Cek apakah sudah lewat 1 minggu sejak pengiriman reminder terakhir
+                if ($kendaraan->reminder_sent && $kendaraan->reminder_sent_at) {
+                    $lastReminderSent = Carbon::parse($kendaraan->reminder_sent_at);
+                    if ($lastReminderSent->addWeek()->isPast()) {
+                        $kendaraan->reminder_sent = false;
+                        $kendaraan->save();
+                    }
+                }
+                
+                $kendaraan->last_reminder_sent = $kendaraan->reminder_sent_at ? Carbon::parse($kendaraan->reminder_sent_at)->diffForHumans() : 'Belum pernah';
+            } else {
+                $kendaraan->durasi = 'Belum pernah';
+                $kendaraan->is_overdue = true;
+                $kendaraan->last_reminder_sent = 'Belum pernah';
 
-        return view('dashboard.pages.admin.reminder.index', compact('overduePerbaikans', 'regularPerbaikans'));
+            } 
+            
+            return $kendaraan;
+        });
+
+        $overdueKendaraans = $kendaraans->filter(function ($kendaraan) {
+            return $kendaraan->is_overdue;
+        });
+
+        $regularKendaraans = $kendaraans->filter(function ($kendaraan) {
+            return !$kendaraan->is_overdue;
+        });
+            
+            
+            // ->map(function ($perbaikan) use ($now) {
+            //     $perbaikan->durasi = $this->hitungDurasi($perbaikan->tgl_selesai, $now);
+            //     return $perbaikan;
+            // });
+
+        return view('dashboard.pages.admin.reminder.index', compact('overdueKendaraans', 'regularKendaraans'));
     }
 
     private function hitungDurasi($tanggalSelesai, $sekarang)
@@ -67,29 +81,32 @@ class ReminderController extends Controller
 
     public function send($id)
     {
-        $perbaikan = Perbaikan::findOrFail($id);
+        $kendaraan = Kendaraan::findOrFail($id);
         $settings = Settings::first();
+        $lastMaintenance = $kendaraan->perbaikans->first();
         try {
-            $phone = $perbaikan->kendaraan->pelanggan->no_telp;
-            $merek = $perbaikan->kendaraan->merek->nama_merek;
-            $tipe = $perbaikan->kendaraan->tipe->nama_tipe;
-            $noPlat = $perbaikan->kendaraan->no_plat;
+            $phone = $kendaraan->pelanggan->no_telp;
+            $nama = $kendaraan->pelanggan->nama;
+            $merek = $kendaraan->merek->nama_merek;
+            $tipe = $kendaraan->tipe->nama_tipe;
+            $noPlat = $kendaraan->no_plat;
+            $schedule = $kendaraan->maintenance_schedule_months;
 
-            $namaPerbaikan = $perbaikan->nama;
-            $keteranganPerbaikan = $perbaikan->keterangan;
-            $statusPerbaikan = $perbaikan->status;
-            $tanggalPerbaikan = Carbon::parse($perbaikan->tgl_selesai)->format('d-m-Y');
+            $namaPerbaikan = $lastMaintenance->nama;
+            $keteranganPerbaikan = $lastMaintenance->keterangan;
+            $statusPerbaikan = $lastMaintenance->status;
+            $tanggalPerbaikan = Carbon::parse($lastMaintenance->tgl_selesai)->format('d-m-Y');
 
             // Hitung durasi
         $now = Carbon::now();
-        $durasi = $this->hitungDurasi($perbaikan->tgl_selesai, $now);
+        $durasi = $this->hitungDurasi($lastMaintenance->tgl_selesai, $now);
 
-            $message = "Yth. Bapak/Ibu " . $perbaikan->kendaraan->pelanggan->nama . "!\n\n" .
+            $message = "Yth. Bapak/Ibu " . $nama . "!\n\n" .
             "{$settings->master_nama} mengingatkan bahwa kendaraan Anda dengan detail berikut:\n\n" .
                 "*Merek:* " . $merek . "\n" .
                 "*Tipe:* " . $tipe . "\n" .
                 "*Nomor Plat:* " . $noPlat . "\n\n" . 
-                "Sudah terlewat {$durasi} sejak Terakhir kali Anda selesai melakukan service di toko kami yaitu pada tanggal " . $tanggalPerbaikan . ", kendaraan anda sudah memasuki waktu servis rutin bulanan. Pastikan untuk menjadwalkan perawatan kendaraan kesayangan Anda di bengkel kami agar performa perjalanan Anda selalu nyaman dan aman.\n\n" . 
+                "Anda mendaftarkan kendaraan anda untuk melakukan perawatan rutin bulanan dengan jadwal setiap {$schedule} bulan sekali. Sekarang sudah terlewat {$durasi} sejak terakhir kali Anda selesai melakukan service di toko kami yaitu pada tanggal " . $tanggalPerbaikan . ", untuk melakukan perbaikan {$namaPerbaikan} . Pastikan untuk segera melakukan perawatan kendaraan kesayangan Anda sesuai dengan jadwal yang sudah di tentukan di bengkel kami, kami mengingatkan anda untuk memastikan anda selalu aman dan nyaman dalam berkendara.\nTerima kasih.\n\n" . 
                 "Untuk informasi lebih lanjut, silakan hubungi kami:\n" .
                 "Telepon: {$settings->telepon}\n" .
                 "WhatsApp: {$settings->whatsapp}\n" .
@@ -115,14 +132,14 @@ class ReminderController extends Controller
                     'response' => $response['response'],
                 ]);
             }
-            Alert::toast('<p style="color: white; margin-top: 15px;">' . $perbaikan->nama . ' Reminder berhasil dikirim ke WhatsApp!</p>', 'success')
+            Alert::toast('<p style="color: white; margin-top: 15px;"> Reminder berhasil dikirim ke WhatsApp!</p>', 'success')
             ->toHtml()
             ->background('#201658');
 
-            $perbaikan->update([
-                'reminder_sent' => true,
-                'reminder_sent_at' => now(),
-            ]);
+            // Update status pengiriman
+            $kendaraan->reminder_sent = true;
+            $kendaraan->reminder_sent_at = now();
+            $kendaraan->save();
 
             return redirect()->route('reminder.index')->with('success', 'Reminder berhasil dikirim');
 

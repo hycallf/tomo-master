@@ -1,8 +1,10 @@
+<!-- resources/views/dashboard/pages/admin/reminder/index.blade.php -->
+
 @extends('dashboard.layouts.main')
 
 @section('content')
     <div class="pagetitle">
-        <h1>Reminder</h1>
+        <h1>Reminder Perawatan Rutin</h1>
         <nav>
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
@@ -14,35 +16,34 @@
     <section class="section">
         <div class="row">
             <div class="col-lg-12">
-                @if ($overduePerbaikans->isNotEmpty())
+                @if ($overdueKendaraans->isNotEmpty())
                     <div class="alert alert-danger" role="alert">
                         <h4 class="alert-heading">Peringatan!</h4>
-                        <p>Terdapat {{ $overduePerbaikans->count() }} kendaraan yang telah melewati 3 bulan setelah
+                        <p>Terdapat {{ $overdueKendaraans->count() }} kendaraan yang telah melewati 3 bulan setelah
                             perbaikan dan belum dikirimkan reminder.</p>
                     </div>
                 @endif
-
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Daftar Reminder Setelah Perbaikan(Prioritas)</h5>
+                        <h5 class="card-title">Daftar Reminder Perawatan Rutin (Overdue)</h5>
                         <table id="overdueTable" class="table datatable">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>services</th>
                                     <th>Pemilik</th>
                                     <th>No Pelanggan</th>
                                     <th>Kendaraan</th>
                                     <th>No Plat</th>
-                                    <th>Terakhir service</th>
-                                    <th>Hitung Hari</th>
+                                    <th>Terakhir Perawatan</th>
+                                    <th>Jadwal Perawatan</th>
+                                    <th>Status Reminder</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($overduePerbaikans as $perbaikan)
+                                @foreach ($overdueKendaraans as $kendaraan)
                                     <tr class="table-danger">
-                                        @include('dashboard.pages.admin.reminder._perbaikan_row')
+                                        @include('dashboard.pages.admin.reminder._kendaraan_row')
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -52,25 +53,25 @@
 
                 <div class="card mt-4">
                     <div class="card-body">
-                        <h5 class="card-title">Daftar Reminder Setelah Perbaikan(Regular)</h5>
+                        <h5 class="card-title">Daftar Reminder Perawatan Rutin (Regular)</h5>
                         <table id="regularTable" class="table datatable">
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>services</th>
                                     <th>Pemilik</th>
                                     <th>No Pelanggan</th>
                                     <th>Kendaraan</th>
                                     <th>No Plat</th>
-                                    <th>Terakhir service</th>
-                                    <th>Hitung Hari</th>
+                                    <th>Terakhir Perawatan</th>
+                                    <th>Jadwal Perawatan</th>
+                                    <th>Status Reminder</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($regularPerbaikans as $perbaikan)
+                                @foreach ($regularKendaraans as $kendaraan)
                                     <tr>
-                                        @include('dashboard.pages.admin.reminder._perbaikan_row')
+                                        @include('dashboard.pages.admin.reminder._kendaraan_row')
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -85,16 +86,7 @@
 @section('scripts')
     <script>
         $(document).ready(function() {
-            $('#overdueTable').DataTable({
-                "order": [],
-                "pageLength": 10,
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json"
-                }
-            });
-
-            $('#regularTable').DataTable({
-                "order": [],
+            $('#overdueTable, #regularTable').DataTable({
                 "pageLength": 10,
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.10.24/i18n/Indonesian.json"
@@ -128,20 +120,7 @@
                                     'Reminder telah dikirim.',
                                     'success'
                                 ).then(() => {
-                                    // Perbarui tampilan tanpa reload halaman
-                                    var cell = button.closest('td');
-                                    cell.html(
-                                        '<span class="badge bg-success">Terkirim</span><br><small>' +
-                                        new Date().toLocaleString() +
-                                        '</small>' +
-                                        '<button type="button" class="btn btn-warning btn-sm send-reminder" data-id="' +
-                                        id +
-                                        '">Re-send <i class="bi bi-send"></i></button>'
-                                    );
-
-                                    // Pindahkan baris ke tabel regular
-                                    var row = button.closest('tr');
-                                    $('#regularTable tbody').append(row);
+                                    location.reload();
                                 });
                             },
                             error: function(xhr) {

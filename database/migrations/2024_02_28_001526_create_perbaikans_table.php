@@ -23,8 +23,6 @@ return new class extends Migration
             $table->integer('biaya')->nullable();
             $table->dateTime('tgl_selesai')->nullable();
             $table->enum('status', ['Baru', 'Antrian', 'Dalam Proses', 'Proses Selesai', 'Menunggu Bayar', 'Selesai'])->nullable();
-            $table->boolean('reminder_sent')->default(false);
-            $table->timestamp('reminder_sent_at')->nullable();
             $table->timestamps();
             
         });

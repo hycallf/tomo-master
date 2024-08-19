@@ -16,14 +16,14 @@ class PerbaikanSeeder extends Seeder
      */
     public function run()
     {
-        Kendaraan::chunk(50, function ($kendaraans) {
-            foreach ($kendaraans as $kendaraan) {
-                Perbaikan::factory(rand(1, 5))->create([
-                    'kendaraan_id' => $kendaraan->id,
-                    'reminder_sent' => false,
-                    'reminder_sent_at' => null,
-                ]);
-            }
-        });
+        // Kendaraan::chunk(50, function ($kendaraans) {
+        //     foreach ($kendaraans as $kendaraan) {
+        //         Perbaikan::factory(rand(1, 5))->create([
+        //             'kendaraan_id' => $kendaraan->id,
+        //             'reminder_sent' => false,
+        //             'reminder_sent_at' => null,
+        //         ]);
+        //     }
+        // });
     }
 }

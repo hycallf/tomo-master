@@ -16,6 +16,15 @@ class Kendaraan extends Model
         'no_plat',
         'foto',
         'keterangan',
+        'maintenance_schedule_months',
+        'last_maintenance_date',
+        'reminder_sent',
+        'reminder_sent_at',
+    ];
+
+    protected $dates = [
+        'last_maintenance_date',
+        'reminder_sent_at',
     ];
 
     public function pelanggan()

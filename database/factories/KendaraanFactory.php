@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Tipe;
 use App\Models\Merek;
 use App\Models\Kendaraan;
+use App\Models\Perbaikan;
 use Illuminate\Support\Str;
 
 /**
@@ -36,6 +37,8 @@ class KendaraanFactory extends Factory
             'merek_id' => $merek_id,
             'tipe_id' => $tipe_id,
             'keterangan' => $keterangan,
+            'maintenance_schedule_months' => $this->faker->numberBetween(1, 4),
+            
         ];
     }
 }

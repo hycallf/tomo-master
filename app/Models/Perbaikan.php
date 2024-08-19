@@ -20,8 +20,6 @@ class Perbaikan extends Model
         'tgl_selesai',
         'tgl_masuk',
         'status',
-        'reminder_sent',
-        'reminder_sent_at'
     ];
 
     public function kendaraan()
