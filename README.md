@@ -61,7 +61,12 @@ Sistem ini adalah aplikasi berbasis Laravel untuk mengelola reminder service ken
     php artisan migrate
     ```
 
-7. (Opsional) Jalankan seeder untuk mengisi data awal:
+7. Jalankan seeder user untuk mengisi data awal:
+    ```
+    php artisan db:seed --class=UserSeeder
+    ```
+    
+(Opsional) Jalankan semua seeder untuk mengisi data awal:
     ```
     php artisan db:seed
     ```
