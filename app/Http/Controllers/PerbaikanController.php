@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use RealRashid\SweetAlert\Facades\Alert;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class PerbaikanController extends Controller
 {
@@ -70,9 +71,7 @@ class PerbaikanController extends Controller
             $foto = $validate['foto']->store('foto');
         }
 
-        $randomString = Str::random(4);
-        $randomNumber = rand(1000, 9999);
-        $kodeUnik = $randomString . '-' . $randomNumber;
+        $kodeUnik = generateUniqueCode("service");
 
         $perbaikan = Perbaikan::create([
             'kode_unik' => $kodeUnik,
