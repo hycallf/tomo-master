@@ -1,6 +1,47 @@
 @extends('dashboard.layouts.main')
 
 @section('css')
+    <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            .invoice-container,
+            .invoice-container * {
+                visibility: visible;
+            }
+
+            .invoice-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+
+        .invoice-container {
+            background-color: white;
+            padding: 20px;
+        }
+
+        .invoice-container .card {
+            border: none;
+            box-shadow: none;
+        }
+
+        .invoice-container .card-body {
+            padding: 0;
+        }
+
+        .table-borderless th,
+        .table-borderless td {
+            border: none;
+        }
+    </style>
 @endsection
 @section('content')
     <div class="pagetitle">
@@ -22,7 +63,17 @@
                     <i class="ri-arrow-go-back-line"></i>
                 </a>
             </div>
-            <div class="col-lg-12">
+
+            <div class="col-md-12 text-end no-print">
+                <button onclick="printInvoice()" class="btn btn-primary">
+                    <i class="bi bi-printer"></i> Cetak Invoice
+                </button>
+                <button onclick="generatePDF()" class="btn btn-success">
+                    <i class="bi bi-file-earmark-pdf"></i> PDF
+                </button>
+            </div>
+
+            <div class="col-lg-12 invoice-container">
                 <div class="card">
                     <div class="card-body">
                         <div class="panel-body mt-4">
@@ -171,4 +222,53 @@
 @endsection
 
 @section('js')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        function printInvoice() {
+            window.print();
+        }
+
+        function generatePDF() {
+            const {
+                jsPDF
+            } = window.jspdf;
+
+            // Ambil elemen invoice-container
+            var element = document.querySelector('.invoice-container');
+
+            // Buat instance jsPDF
+            var doc = new jsPDF('l', 'pt', 'a4');
+
+            // Atur opsi untuk html2canvas
+            var options = {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            };
+
+            // Gunakan html2canvas untuk mengubah elemen menjadi canvas
+            html2canvas(element, options).then(function(canvas) {
+                var imgData = canvas.toDataURL('image/png');
+                var imgWidth = doc.internal.pageSize.getWidth();
+                var pageHeight = doc.internal.pageSize.getHeight();
+                var imgHeight = canvas.height * imgWidth / canvas.width;
+                var heightLeft = imgHeight;
+                var position = 0;
+
+                doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    doc.addPage();
+                    doc.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                // Simpan PDF
+                doc.save('invoice.pdf');
+            });
+        }
+    </script>
 @endsection
