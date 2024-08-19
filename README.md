@@ -78,7 +78,7 @@ Sistem ini adalah aplikasi berbasis Laravel untuk mengelola reminder service ken
 2. Tambahkan konfigurasi Wablas di file `.env`:
 
     ```
-    WABLAS_API_TOKEN=your_wablas_token
+    WABLAS_API_KEY=your_wablas_token
     WABLAS_URL=https://your-wablas-domain.com
     ```
 
